@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -30,28 +31,40 @@ public class BotControl {
     public BotControl() {
         instance = this;
     }
-    public void loadThings() {
-        FMLLog.log(Level.WARN, "I am in " + String.valueOf(jda.getGuilds().size()) + " Guilds");
-
-    //    guild = jda.getGuilds().get(0);
-     //   channel = guild.getTextChannelById(ConfigHandler.getInstance().getChannelid());
+    public void loadthings()  {
+        try {
+            FMLLog.log(Level.WARN, "I am in " + jda.awaitReady().getGuilds().size() + " Guilds");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            guild = jda.awaitReady().getGuilds().get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        channel = guild.getTextChannelById(ConfigHandler.getInstance().getChannelid());
     }
 
     public void startBot() throws LoginException {
         jda = new JDABuilder(AccountType.BOT).setToken(ConfigHandler.getInstance().getToken()).build();
         addCommands();
-        loadThings();
+        loadthings();
     }
     public void sendMessageToDiscord(String player, String message, String TYPE) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        if (TYPE.equals("MESSAGE")) {
-            channel.sendMessage("``%time%``  %player%: %message%".replace("%player%", player).replace("%time%", dtf.format(now)));
+        boolean messagetype = TYPE.equals("MESSAGE");
+        boolean leave = TYPE.equals("LEAVE");
+        boolean join = TYPE.equals("JOIN");
+
+        if (messagetype) {
+
+            channel.sendMessage("``%time%``  %player%: %message%".replace("%player%", player).replace("%time%", dtf.format(now).replace("%message%", message)));
         }
-        if (TYPE.equals("LEAVE")) {
-            channel.sendMessage("``%time%``  %player%: %message%".replace("%player%", player).replace("%time%", dtf.format(now)));
+        if (leave) {
+            channel.sendMessage("``%time%``  **%player%** joined".replace("%player%", player).replace("%time%", dtf.format(now)));
         }
-        if (TYPE.equals("JOIN")) {
+        if (join) {
             channel.sendMessage("``%time%``  * **%player%** left*".replace("%player%", player).replace("%time%", dtf.format(now)));
         }
     }
@@ -62,16 +75,17 @@ public class BotControl {
         return guild;
     }
     public void sendMessageToGame(User user, String[] message) {
-        StringBuilder sb= new StringBuilder();
-        for(String s : message) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : message) {
             sb.append(s);
             sb.append(" ");
         }
         String discordText = TextFormatting.AQUA + "[DISCORD] ";
-        String discordat = TextFormatting.YELLOW + "@" + user.getName() + " ";
-        FMLCommonHandler.instance().getMinecraftServerInstance().sendMessage(new TextComponentString(discordText + discordat +sb.toString()));
+        String discordat = TextFormatting.YELLOW + "@" + user.getName() + ": ";
+        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().forEach(player -> {
+            player.sendMessage(new TextComponentString(discordText + discordat + "" + TextFormatting.WHITE + sb.toString()));
+        });
     }
-
     public static BotControl getInstance() {
         return instance;
     }

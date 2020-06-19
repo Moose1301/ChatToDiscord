@@ -6,6 +6,7 @@ import me.moose.ChatToDiscord.event.IGChatEvent;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -46,7 +47,8 @@ public class ChatToDiscord
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(IGChatEvent.class);
+        MinecraftForge.EVENT_BUS.register(new IGChatEvent());
+
         // some example code
     }
 
