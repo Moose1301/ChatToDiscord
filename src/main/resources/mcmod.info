@@ -1,0 +1,16 @@
+[
+{
+  "modid": "chattodiscord",
+  "name": "Chat to Discord",
+  "description": "Chat <-> Discord",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Moose1301"],
+  "credits": "Moose1301",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
