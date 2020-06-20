@@ -17,19 +17,18 @@ public class IGChatEvent {
     public void serverchat(ServerChatEvent event) {
         String message = event.getMessage();
         String usernameplayer =  event.getUsername();
-
-        BotControl.getInstance().sendMessageToDiscord(usernameplayer, message, "MESSAGE");
+        BotControl.getInstance().sendMessageToDiscord(usernameplayer, message);
     }
     @SubscribeEvent
     public void playerjoin(PlayerEvent.PlayerLoggedInEvent event) {
         String usernameplayer =  event.player.getDisplayNameString();
 
-        BotControl.getInstance().sendMessageToDiscord(usernameplayer, "message", "JOIN");
+        BotControl.getInstance().sendJoinToDiscord(usernameplayer);
     }
     @SubscribeEvent
     public void playerleave(PlayerEvent.PlayerLoggedOutEvent event) {
         String usernameplayer =  event.player.getDisplayNameString();
 
-        BotControl.getInstance().sendMessageToDiscord(usernameplayer, "message", "LEAVE");
+        BotControl.getInstance().sendLeaveToDiscord(usernameplayer);
     }
 }

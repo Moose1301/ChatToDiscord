@@ -50,23 +50,21 @@ public class BotControl {
         addCommands();
         loadthings();
     }
-    public void sendMessageToDiscord(String player, String message, String TYPE) {
+    public void sendMessageToDiscord(String player, String message) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        boolean messagetype = TYPE.equals("MESSAGE");
-        boolean leave = TYPE.equals("LEAVE");
-        boolean join = TYPE.equals("JOIN");
+            channel.sendMessage("``%time%``  %player%: %message%".replace("%player%", player).replace("%time%", dtf.format(now)).replace("%message%", message)).queue();
+    }
+    public void sendJoinToDiscord(String player) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        channel.sendMessage("``%time%``  **%player%** joined".replace("%player%", player).replace("%time%", dtf.format(now))).queue();
+    }
 
-        if (messagetype) {
-
-            channel.sendMessage("``%time%``  %player%: %message%".replace("%player%", player).replace("%time%", dtf.format(now).replace("%message%", message)));
-        }
-        if (leave) {
-            channel.sendMessage("``%time%``  **%player%** joined".replace("%player%", player).replace("%time%", dtf.format(now)));
-        }
-        if (join) {
-            channel.sendMessage("``%time%``  * **%player%** left*".replace("%player%", player).replace("%time%", dtf.format(now)));
-        }
+    public void sendLeaveToDiscord(String player) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        channel.sendMessage("``%time%``  **%player%** left".replace("%player%", player).replace("%time%", dtf.format(now))).queue();
     }
     public void addCommands() {
         jda.addEventListener(new DiscordChatMessage());
